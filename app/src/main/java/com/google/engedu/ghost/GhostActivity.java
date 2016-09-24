@@ -2,6 +2,7 @@ package com.google.engedu.ghost;
 
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -26,6 +27,7 @@ public class GhostActivity extends AppCompatActivity {
     private Random random = new Random();
     private Button btnChallenge, btnRestart;
     private TextView txtWord, txtLabel;
+    private int scoreUser = 0, scoreComputer = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,7 @@ public class GhostActivity extends AppCompatActivity {
         btnRestart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                onStart(null);
             }
         });
     }
@@ -100,6 +102,27 @@ public class GhostActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString("WORD", txtWord.getText().toString());
+        outState.putString("LABEL", txtLabel.getText().toString());
+        outState.putInt("SCORE_USER", scoreUser);
+        outState.putInt("SCORE_COMPUTER", scoreComputer);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null){
+            txtWord.setText(savedInstanceState.getString("WORD"));
+            txtLabel.setText(savedInstanceState.getString("LABEL"));
+            userTurn = true;  // a saved state is always user turn
+            scoreUser = savedInstanceState.getInt("SCORE_USER");
+            scoreComputer = savedInstanceState.getInt("SCORE_COMPUTER");
+        }
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     /**
@@ -144,8 +167,10 @@ public class GhostActivity extends AppCompatActivity {
     private void endGame(boolean win){
         if (win){
             txtLabel.setText("User Wins | Your Turn");
+            scoreUser += 1;
         } else {
             txtLabel.setText("Computer Wins | Your Turn");
+            scoreComputer += 1;
         }
         txtWord.setText("");
         userTurn = true;
