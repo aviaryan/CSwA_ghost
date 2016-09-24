@@ -3,12 +3,15 @@ package com.google.engedu.ghost;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,8 +24,8 @@ public class GhostActivity extends AppCompatActivity {
     private GhostDictionary dictionary;
     private boolean userTurn = false;
     private Random random = new Random();
-    private Button btnChallenge = (Button) findViewById(R.id.bChallenge);
-    private Button btnRestart = (Button) findViewById(R.id.bRestart);
+    private Button btnChallenge, btnRestart;
+    private TextView txtWord, txtLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +39,13 @@ public class GhostActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(this, "Could not load dictionary", Toast.LENGTH_LONG);
             toast.show();
         }
+        // instantiate views
+        btnChallenge = (Button) findViewById(R.id.bChallenge);
+        btnRestart = (Button) findViewById(R.id.bRestart);
+        txtWord = (TextView) findViewById(R.id.ghostText);
+        txtLabel = (TextView) findViewById(R.id.gameStatus);
+        // start game
         onStart(null);
-
         // challenge button listener
         btnChallenge.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,20 +95,32 @@ public class GhostActivity extends AppCompatActivity {
         userTurn = random.nextBoolean();
         TextView text = (TextView) findViewById(R.id.ghostText);
         text.setText("");
-        TextView label = (TextView) findViewById(R.id.gameStatus);
         if (userTurn) {
-            label.setText(USER_TURN);
+            txtLabel.setText(USER_TURN);
         } else {
-            label.setText(COMPUTER_TURN);
+            txtLabel.setText(COMPUTER_TURN);
             computerTurn();
         }
         return true;
     }
 
     private void computerTurn() {
-        TextView label = (TextView) findViewById(R.id.gameStatus);
         // Do computer turn stuff then make it the user's turn again
         userTurn = true;
-        label.setText(USER_TURN);
+        txtLabel.setText(USER_TURN);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        char c = (char) event.getUnicodeChar();
+        if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')){
+            txtWord.setText(txtWord.getText().toString() + c);
+            txtLabel.setText(COMPUTER_TURN);
+            userTurn = false;
+            computerTurn();
+        } else {
+            (Toast.makeText(this, "Please enter a valid character", Toast.LENGTH_LONG)).show();
+        }
+        return super.onKeyUp(keyCode, event);
     }
 }
