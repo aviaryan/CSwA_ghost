@@ -26,7 +26,7 @@ public class GhostActivity extends AppCompatActivity {
     private boolean userTurn = false;
     private Random random = new Random();
     private Button btnChallenge, btnRestart;
-    private TextView txtWord, txtLabel;
+    private TextView txtWord, txtLabel, txtUserScore, txtComputerScore;
     private int scoreUser = 0, scoreComputer = 0;
 
     @Override
@@ -46,6 +46,8 @@ public class GhostActivity extends AppCompatActivity {
         btnRestart = (Button) findViewById(R.id.bRestart);
         txtWord = (TextView) findViewById(R.id.ghostText);
         txtLabel = (TextView) findViewById(R.id.gameStatus);
+        txtUserScore = (TextView) findViewById(R.id.scoreUser);
+        txtComputerScore = (TextView) findViewById(R.id.scoreComputer);
         // start game
         onStart(null);
         // challenge button listener
@@ -121,6 +123,7 @@ public class GhostActivity extends AppCompatActivity {
             userTurn = true;  // a saved state is always user turn
             scoreUser = savedInstanceState.getInt("SCORE_USER");
             scoreComputer = savedInstanceState.getInt("SCORE_COMPUTER");
+            updateScoresOnBoard();
         }
         super.onRestoreInstanceState(savedInstanceState);
     }
@@ -172,12 +175,18 @@ public class GhostActivity extends AppCompatActivity {
             txtLabel.setText("Computer Wins | Your Turn");
             scoreComputer += 1;
         }
+        updateScoresOnBoard();
         txtWord.setText("");
         userTurn = true;
     }
 
     private void addTextToGame(char c){
         txtWord.setText(txtWord.getText().toString() + c);
+    }
+
+    private void updateScoresOnBoard(){
+        txtUserScore.setText(scoreUser + "");
+        txtComputerScore.setText(scoreComputer + "");
     }
 
     @Override
