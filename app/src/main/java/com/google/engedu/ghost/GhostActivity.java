@@ -50,7 +50,7 @@ public class GhostActivity extends AppCompatActivity {
         btnChallenge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                challengeHandler();
             }
         });
 
@@ -61,6 +61,23 @@ public class GhostActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void challengeHandler() {
+        // handles when user presses challenge button
+        String word = txtWord.getText().toString();
+        String nextWord;
+        if (word.length() >= 4 && dictionary.isWord(word)){
+            endGame(true);
+        } else {
+            nextWord = dictionary.getAnyWordStartingWith(word);
+            if (nextWord != null){
+                endGame(false);
+                (Toast.makeText(this, "A word exists! " + nextWord, Toast.LENGTH_LONG)).show();
+            } else {
+                endGame(true);
+            }
+        }
     }
 
     @Override
@@ -109,12 +126,12 @@ public class GhostActivity extends AppCompatActivity {
         String text = txtWord.getText().toString();
         String nextWord;
         if (text.length() >= 4 && dictionary.isWord(text)){
-            endGame();
+            endGame(false);
             return;
         } else {
             nextWord = dictionary.getAnyWordStartingWith(text);
             if (nextWord == null){
-                endGame();
+                endGame(false);
                 return;
             } else {
                 addTextToGame(nextWord.charAt(text.length()));
@@ -124,8 +141,12 @@ public class GhostActivity extends AppCompatActivity {
         txtLabel.setText(USER_TURN);
     }
 
-    private void endGame(){
-        txtLabel.setText("Computer Wins | User Turn");
+    private void endGame(boolean win){
+        if (win){
+            txtLabel.setText("User Wins | Your Turn");
+        } else {
+            txtLabel.setText("Computer Wins | Your Turn");
+        }
         txtWord.setText("");
         userTurn = true;
     }
