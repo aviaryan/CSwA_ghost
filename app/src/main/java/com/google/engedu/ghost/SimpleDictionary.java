@@ -27,6 +27,10 @@ public class SimpleDictionary implements GhostDictionary {
 
     @Override
     public String getAnyWordStartingWith(String prefix) {
+        for (String s: words){
+            if (s.startsWith(prefix))
+                return s;
+        }
         return null;
     }
 

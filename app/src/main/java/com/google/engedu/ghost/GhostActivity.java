@@ -106,15 +106,39 @@ public class GhostActivity extends AppCompatActivity {
 
     private void computerTurn() {
         // Do computer turn stuff then make it the user's turn again
+        String text = txtWord.getText().toString();
+        String nextWord;
+        if (text.length() >= 4 && dictionary.isWord(text)){
+            endGame();
+            return;
+        } else {
+            nextWord = dictionary.getAnyWordStartingWith(text);
+            if (nextWord == null){
+                endGame();
+                return;
+            } else {
+                addTextToGame(nextWord.charAt(text.length()));
+            }
+        }
         userTurn = true;
         txtLabel.setText(USER_TURN);
+    }
+
+    private void endGame(){
+        txtLabel.setText("Computer Wins | User Turn");
+        txtWord.setText("");
+        userTurn = true;
+    }
+
+    private void addTextToGame(char c){
+        txtWord.setText(txtWord.getText().toString() + c);
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         char c = (char) event.getUnicodeChar();
         if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')){
-            txtWord.setText(txtWord.getText().toString() + c);
+            addTextToGame(c);
             txtLabel.setText(COMPUTER_TURN);
             userTurn = false;
             computerTurn();
