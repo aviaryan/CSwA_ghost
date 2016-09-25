@@ -36,7 +36,7 @@ public class GhostActivity extends AppCompatActivity {
         AssetManager assetManager = getAssets();
         try {
             InputStream inputStream = assetManager.open("words.txt");
-            dictionary = new SimpleDictionary(inputStream);
+            dictionary = new FastDictionary(inputStream);
         } catch (IOException e) {
             Toast toast = Toast.makeText(this, "Could not load dictionary", Toast.LENGTH_LONG);
             toast.show();
@@ -155,7 +155,7 @@ public class GhostActivity extends AppCompatActivity {
             endGame(false);
             return;
         } else {
-            nextWord = dictionary.getAnyWordStartingWith(text);
+            nextWord = dictionary.getGoodWordStartingWith(text);
             if (nextWord == null){
                 endGame(false);
                 return;
