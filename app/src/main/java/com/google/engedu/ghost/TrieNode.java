@@ -26,11 +26,37 @@ public class TrieNode {
     }
 
     public boolean isWord(String s) {
-      return false;
+        TrieNode temp = searchNode(s);
+        if (temp == null)
+            return false;
+        else
+            return temp.isWord;
+    }
+
+    private TrieNode searchNode(String s){
+        TrieNode temp = this;
+        for (int i = 0; i < s.length(); i++){
+            if (!temp.children.containsKey(s.charAt(i))){
+                return null;
+            }
+            temp = temp.children.get(s.charAt(i));
+        }
+        return temp;
     }
 
     public String getAnyWordStartingWith(String s) {
-        return null;
+        TrieNode temp = searchNode(s);
+        if (temp == null){
+            return null;
+        }
+        while (!temp.isWord){
+            for (Character c: temp.children.keySet()){
+                temp = temp.children.get(c);
+                s += c;
+                break;
+            }
+        }
+        return s;
     }
 
     public String getGoodWordStartingWith(String s) {
