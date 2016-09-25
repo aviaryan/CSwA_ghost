@@ -1,6 +1,7 @@
 package com.google.engedu.ghost;
 
 import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
@@ -72,14 +73,13 @@ public class GhostActivity extends AppCompatActivity {
         String word = txtWord.getText().toString();
         String nextWord;
         if (word.length() >= 4 && dictionary.isWord(word)){
-            endGame(true);
+            endGame(true, word + " is a valid word");
         } else {
             nextWord = dictionary.getAnyWordStartingWith(word);
             if (nextWord != null){
-                endGame(false);
-                (Toast.makeText(this, "A word exists! " + nextWord, Toast.LENGTH_LONG)).show();
+                endGame(false, word + " is a prefix of word \"" + nextWord + "\"");
             } else {
-                endGame(true);
+                endGame(true, word + " is not a prefix of any word");
             }
         }
     }
@@ -138,6 +138,10 @@ public class GhostActivity extends AppCompatActivity {
         userTurn = random.nextBoolean();
         TextView text = (TextView) findViewById(R.id.ghostText);
         text.setText("");
+        // reset back
+        text.setTextColor(Color.BLACK);
+        btnChallenge.setEnabled(true);
+        // make turn
         if (userTurn) {
             txtLabel.setText(USER_TURN);
         } else {
@@ -152,12 +156,12 @@ public class GhostActivity extends AppCompatActivity {
         String text = txtWord.getText().toString();
         String nextWord;
         if (text.length() >= 4 && dictionary.isWord(text)){
-            endGame(false);
+            endGame(false, text + " is a valid word");
             return;
         } else {
             nextWord = dictionary.getGoodWordStartingWith(text);
             if (nextWord == null){
-                endGame(false);
+                endGame(false, text + " is not a prefix of any word");
                 return;
             } else {
                 addTextToGame(nextWord.charAt(text.length()));
@@ -167,17 +171,17 @@ public class GhostActivity extends AppCompatActivity {
         txtLabel.setText(USER_TURN);
     }
 
-    private void endGame(boolean win){
+    private void endGame(boolean win, String suffix){
         if (win){
-            txtLabel.setText("User Wins | Your Turn");
+            txtLabel.setText("User Wins. " + suffix);
             scoreUser += 1;
         } else {
-            txtLabel.setText("Computer Wins | Your Turn");
+            txtLabel.setText("Computer Wins. " + suffix);
             scoreComputer += 1;
         }
+        txtWord.setTextColor(Color.GRAY);
+        btnChallenge.setEnabled(false);
         updateScoresOnBoard();
-        txtWord.setText("");
-        userTurn = true;
     }
 
     private void addTextToGame(char c){
