@@ -1,11 +1,14 @@
 package com.google.engedu.ghost;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 
 public class TrieNode {
     private HashMap<Character, TrieNode> children;
     private boolean isWord;
+    private Random rand = new Random();
 
     public TrieNode() {
         children = new HashMap<>();
@@ -60,6 +63,34 @@ public class TrieNode {
     }
 
     public String getGoodWordStartingWith(String s) {
-        return null;
+        TrieNode temp = searchNode(s);
+        if (temp == null){
+            return null;
+        }
+        // get a random word
+        ArrayList<Character> charsNoWord = new ArrayList<>();
+        ArrayList<Character> charsWord = new ArrayList<>();
+        Character c;
+
+        while (true){
+            charsNoWord.clear();
+            charsWord.clear();
+            for (Character ch: temp.children.keySet()){
+                if (temp.children.get(ch).isWord){
+                    charsWord.add(ch);
+                } else {
+                    charsNoWord.add(ch);
+                }
+            }
+            if (charsNoWord.size() == 0){
+                s += charsWord.get( rand.nextInt(charsWord.size()) );
+                break;
+            } else {
+                c = charsNoWord.get( rand.nextInt(charsNoWord.size()) );
+                s += c;
+                temp = temp.children.get(c);
+            }
+        }
+        return s;
     }
 }

@@ -155,7 +155,7 @@ public class GhostActivity extends AppCompatActivity {
             endGame(false);
             return;
         } else {
-            nextWord = dictionary.getAnyWordStartingWith(text);
+            nextWord = dictionary.getGoodWordStartingWith(text);
             if (nextWord == null){
                 endGame(false);
                 return;
